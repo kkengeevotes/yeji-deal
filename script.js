@@ -92,23 +92,33 @@ function dealStartingHands(state) {
 }
 
 // ===== START A GAME =====
-let game = newGame(["Dita", "Friend", "Yeji"]);
+let game = newGame(["Dita", "Friend"]);
 dealStartingHands(game);
 
-// ===== CHECK IT IN THE CONSOLE =====
-console.log("Whole game state:", game);
+// ===== FIND THE SCREEN PARTS (once) =====
+const deckInfo  = document.getElementById("deck-info");
+const handLabel = document.getElementById("hand-label");
+const hand      = document.getElementById("hand");
+const nextBtn   = document.getElementById("next-btn");
 
-for (const player of game.players) {
-  console.log(player.name + "'s hand:");
-  console.table(player.hand);   // prints the cards as a neat table
+// ===== RENDER: draw the screen from the game state =====
+function render() {
+  const player = game.players[game.currentPlayer];   // whose turn is it?
+
+  deckInfo.textContent = "Deck: " + game.deck.length + " cards left";
+  handLabel.textContent = player.name + "'s hand (" + player.hand.length + " cards)";
+
+  hand.innerHTML = "";                  // wipe the old cards
+  for (const card of player.hand) {
+    hand.appendChild(createCardElement(card));
+  }
 }
 
-// Safety check: no card should ever appear or disappear
-const cardsInHands = game.players.reduce((sum, p) => sum + p.hand.length, 0);
-console.log("Deck:", game.deck.length, "| In hands:", cardsInHands,
-            "| Total:", game.deck.length + cardsInHands);   // must be 43
+render();   // draw the very first screen
 
-// A short summary on screen
-document.getElementById("deck-info").textContent =
-  "Deck: " + game.deck.length + " cards left. " +
-  game.players.map(p => p.name + " has " + p.hand.length + " cards").join(", ");
+// ===== TEMPORARY: switch players to test the render =====
+nextBtn.addEventListener("click", function () {
+  // % means "remainder": with 2 players this goes 0 → 1 → 0 → 1...
+  game.currentPlayer = (game.currentPlayer + 1) % game.players.length;
+  render();   // state changed → redraw
+});

@@ -91,19 +91,48 @@ h1 {
   transform: scale(0.95);
 }
 
-/* The hand: cards side by side, wrapping onto new rows on small screens */
-#hand {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;               /* space between cards */
-  justify-content: center;
-  margin-top: 20px;
-}
-
 /* Money cards: yellow instead of pink */
 .card.money {
   border-color: #fcc419;
 }
 .card.money .card-value {
   background: #fab005;
+}
+
+/* Leave room at the bottom so nothing hides behind the hand bar */
+body {
+  padding-bottom: 280px;
+}
+
+/* The hand bar: fixed to the bottom, like a hand of cards held up */
+#hand-area {
+  position: fixed;          /* stays put while the page scrolls */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  border-radius: 24px 24px 0 0;   /* round only the top corners */
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  padding: 12px 0 16px;
+}
+
+#hand-label {
+  margin: 0 16px 8px;
+  font-weight: bold;
+  color: #d6336c;
+}
+
+/* The cards: one row that scrolls sideways */
+#hand {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;                 /* swipe left/right if they don't fit */
+  padding: 4px 16px 8px;
+  scroll-snap-type: x mandatory;    /* swiping stops neatly on a card */
+}
+
+
+#hand .card {
+  flex-shrink: 0;                   /* don't squash cards to fit */
+  scroll-snap-align: start;
 }
