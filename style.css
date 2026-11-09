@@ -97,6 +97,7 @@ h1 {
   flex-wrap: wrap;
   gap: 12px;               /* space between cards */
   justify-content: center;
+  margin-top: 20px;
 }
 
 /* Money cards: yellow instead of pink */
