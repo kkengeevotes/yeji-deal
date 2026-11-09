@@ -50,27 +50,65 @@ function createCardElement(card) {
   return div;
 }
 
-// ===== Using the functions =====
-const hand = document.getElementById("hand");
-const deckInfo = document.getElementById("deck-info");
-const shuffleBtn = document.getElementById("shuffle-btn");
+// ===== THE GAME STATE =====
+// One object that describes the whole table.
+function newGame(playerNames) {
+  const state = {
+    deck: shuffle(buildDeck()),   // the face-down draw pile
+    discard: [],                  // used cards go here
+    players: [],                  // filled in below
+    currentPlayer: 0,             // whose turn: 0 = first player
+  };
 
-let deck = shuffle(buildDeck());   // build it, then shuffle it
-
-function showTopCards() {
-  hand.innerHTML = "";                       // clear the old cards
-  const topTen = deck.slice(0, 10);          // the first 10 cards
-  for (const card of topTen) {
-    hand.appendChild(createCardElement(card));
+  // Every player gets the same empty spaces
+  for (const name of playerNames) {
+    state.players.push({
+      name: name,
+      hand: [],       // private: only this player sees it
+      bank: [],       // public: their money
+      playArea: [],   // public: their laid-down Collections
+    });
   }
-  deckInfo.textContent = "Deck: " + deck.length + " cards. Showing the top 10.";
+  return state;
 }
 
-showTopCards();
-console.log("Deck size:", deck.length);   // should be 43
+// ===== DRAWING =====
+// Moves cards from the top of the deck into a player's hand.
+function drawCards(state, player, howMany) {
+  for (let i = 0; i < howMany; i++) {
+    if (state.deck.length === 0) {
+      break;   // deck is empty: stop (Day 15 handles reshuffling)
+    }
+    const card = state.deck.pop();   // .pop() REMOVES the last card and gives it to us
+    player.hand.push(card);
+  }
 
-// Tap the button to shuffle the same deck again
-shuffleBtn.addEventListener("click", function () {
-  shuffle(deck);
-  showTopCards();
-});
+}
+
+function dealStartingHands(state) {
+  for (const player of state.players) {
+    drawCards(state, player, 5);
+  }
+}
+
+// ===== START A GAME =====
+let game = newGame(["Dita", "Friend", "Yeji"]);
+dealStartingHands(game);
+
+// ===== CHECK IT IN THE CONSOLE =====
+console.log("Whole game state:", game);
+
+for (const player of game.players) {
+  console.log(player.name + "'s hand:");
+  console.table(player.hand);   // prints the cards as a neat table
+}
+
+// Safety check: no card should ever appear or disappear
+const cardsInHands = game.players.reduce((sum, p) => sum + p.hand.length, 0);
+console.log("Deck:", game.deck.length, "| In hands:", cardsInHands,
+            "| Total:", game.deck.length + cardsInHands);   // must be 43
+
+// A short summary on screen
+document.getElementById("deck-info").textContent =
+  "Deck: " + game.deck.length + " cards left. " +
+  game.players.map(p => p.name + " has " + p.hand.length + " cards").join(", ");
