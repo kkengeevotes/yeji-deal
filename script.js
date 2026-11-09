@@ -1,3 +1,7 @@
+// =============================================
+// YEJI DEAL: script.js (complete file as of Day 10)
+// =============================================
+
 // ===== FUNCTION 1: build the deck =====
 // Turns "Money ×6" into 6 separate card objects.
 function buildDeck() {
@@ -5,31 +9,24 @@ function buildDeck() {
   let nextId = 1;
 
   for (const kind of CARD_LIST) {
-    // Repeat "count" times: i = 0, 1, 2... up to count - 1
     for (let i = 0; i < kind.count; i++) {
-      // { ...kind } copies all the facts of this kind of card.
-      // We also give each copy its own id number, so every card is unique.
       deck.push({ ...kind, id: nextId });
       nextId = nextId + 1;
     }
   }
-  return deck;   // hand the finished deck back
+  return deck;
 }
 
-// ===== FUNCTION 2: shuffle =====
-// The standard fair shuffle (called Fisher–Yates).
-// Go from the last card to the first. Swap each one with
-// a random card at or before its position.
+// ===== FUNCTION 2: shuffle (Fisher–Yates) =====
 function shuffle(deck) {
   for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));   // random position 0..i
-    [deck[i], deck[j]] = [deck[j], deck[i]];        // swap the two cards
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
   }
   return deck;
 }
 
 // ===== FUNCTION 3: make the HTML for one card =====
-// Same code as Day 6, just moved into a function so we can reuse it.
 function createCardElement(card) {
   const div = document.createElement("div");
   div.className = "card";
@@ -51,38 +48,34 @@ function createCardElement(card) {
 }
 
 // ===== THE GAME STATE =====
-// One object that describes the whole table.
 function newGame(playerNames) {
   const state = {
-    deck: shuffle(buildDeck()),   // the face-down draw pile
-    discard: [],                  // used cards go here
-    players: [],                  // filled in below
-    currentPlayer: 0,             // whose turn: 0 = first player
+    deck: shuffle(buildDeck()),
+    discard: [],
+    players: [],
+    currentPlayer: 0,
   };
 
-  // Every player gets the same empty spaces
   for (const name of playerNames) {
     state.players.push({
       name: name,
-      hand: [],       // private: only this player sees it
-      bank: [],       // public: their money
-      playArea: [],   // public: their laid-down Collections
+      hand: [],
+      bank: [],
+      playArea: [],
     });
   }
   return state;
 }
 
 // ===== DRAWING =====
-// Moves cards from the top of the deck into a player's hand.
 function drawCards(state, player, howMany) {
   for (let i = 0; i < howMany; i++) {
     if (state.deck.length === 0) {
-      break;   // deck is empty: stop (Day 15 handles reshuffling)
+      break;
     }
-    const card = state.deck.pop();   // .pop() REMOVES the last card and gives it to us
+    const card = state.deck.pop();
     player.hand.push(card);
   }
-
 }
 
 function dealStartingHands(state) {
@@ -116,7 +109,7 @@ function render() {
   hand.innerHTML = "";
 
   if (handHidden) {
-    // Cover up, and don't even draw the cards underneath. Nothing to peek at!
+    // Cover up, and don't even draw the cards underneath
     cover.classList.remove("hidden");
     coverName.textContent = player.name;
   } else {
@@ -129,8 +122,8 @@ function render() {
 
 // ===== ACTIONS =====
 function endTurn() {
-  game.currentPlayer = (game.currentPlayer + 1) % game.players.length;  // next player
-  handHidden = true;                                                     // cover up
+  game.currentPlayer = (game.currentPlayer + 1) % game.players.length;
+  handHidden = true;
   render();
 }
 
@@ -142,4 +135,4 @@ function revealHand() {
 endTurnBtn.addEventListener("click", endTurn);
 cover.addEventListener("click", revealHand);
 
-render();   // draw the first screen
+render();
