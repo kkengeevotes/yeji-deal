@@ -1,0 +1,108 @@
+/* Makes width/height include padding — saves headaches later */
+* {
+  box-sizing: border-box;
+}
+
+/* The whole page */
+body {
+  margin: 0;
+  padding: 24px 16px;
+  font-family: system-ui, sans-serif;   /* the phone's own nice font */
+  background: #fff0f6;                  /* soft pink */
+  display: flex;                        /* flex = easy layout */
+  flex-direction: column;               /* stack things top to bottom */
+  align-items: center;                  /* centre them */
+}
+
+h1 {
+  color: #d6336c;
+}
+
+/* The card itself — a "." means "everything with this class" */
+.card {
+  width: 160px;
+  height: 224px;              /* 160 x 224 = real playing-card shape */
+  background: white;
+  border: 3px solid #f783ac;
+  border-radius: 16px;        /* rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);  /* soft shadow */
+  padding: 12px;
+  position: relative;         /* lets the value bubble sit in the corner */
+  display: flex;
+  flex-direction: column;
+
+}
+
+/* The round value bubble in the top-left corner */
+.card-value {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;         /* 50% = a perfect circle */
+  background: #f783ac;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-type {
+  text-align: right;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #868e96;
+}
+
+.card-name {
+  margin: auto 0;             /* "auto" pushes it to the middle */
+  text-align: center;
+  font-size: 20px;
+  color: #343a40;
+}
+
+
+.card-rent {
+  margin: 0;
+  padding: 4px;
+  text-align: center;
+  font-size: 12px;
+  background: #fff0f6;
+  border-radius: 8px;
+}
+
+.button {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background: #d6336c;
+  border: none;
+  border-radius: 999px;   /* very round = pill shape */
+  cursor: pointer;
+}
+
+/* Shrinks slightly while pressed, so it feels like a real button */
+.button:active {
+  transform: scale(0.95);
+}
+
+/* The hand: cards side by side, wrapping onto new rows on small screens */
+#hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;               /* space between cards */
+  justify-content: center;
+}
+
+/* Money cards: yellow instead of pink */
+.card.money {
+  border-color: #fcc419;
+}
+.card.money .card-value {
+  background: #fab005;
+}
