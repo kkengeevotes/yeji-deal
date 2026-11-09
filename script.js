@@ -95,30 +95,51 @@ function dealStartingHands(state) {
 let game = newGame(["Dita", "Friend"]);
 dealStartingHands(game);
 
-// ===== FIND THE SCREEN PARTS (once) =====
-const deckInfo  = document.getElementById("deck-info");
-const handLabel = document.getElementById("hand-label");
-const hand      = document.getElementById("hand");
-const nextBtn   = document.getElementById("next-btn");
+// ===== SCREEN STATE (only this phone's view, not the game) =====
+let handHidden = true;   // start covered, so player 1 also gets a reveal
 
-// ===== RENDER: draw the screen from the game state =====
+// ===== FIND THE SCREEN PARTS (once) =====
+const deckInfo   = document.getElementById("deck-info");
+const handLabel  = document.getElementById("hand-label");
+const hand       = document.getElementById("hand");
+const endTurnBtn = document.getElementById("end-turn-btn");
+const cover      = document.getElementById("cover");
+const coverName  = document.getElementById("cover-name");
+
+// ===== RENDER: draw the screen from the state =====
 function render() {
-  const player = game.players[game.currentPlayer];   // whose turn is it?
+  const player = game.players[game.currentPlayer];
 
   deckInfo.textContent = "Deck: " + game.deck.length + " cards left";
   handLabel.textContent = player.name + "'s hand (" + player.hand.length + " cards)";
 
-  hand.innerHTML = "";                  // wipe the old cards
-  for (const card of player.hand) {
-    hand.appendChild(createCardElement(card));
+  hand.innerHTML = "";
+
+  if (handHidden) {
+    // Cover up, and don't even draw the cards underneath. Nothing to peek at!
+    cover.classList.remove("hidden");
+    coverName.textContent = player.name;
+  } else {
+    cover.classList.add("hidden");
+    for (const card of player.hand) {
+      hand.appendChild(createCardElement(card));
+    }
   }
 }
 
-render();   // draw the very first screen
+// ===== ACTIONS =====
+function endTurn() {
+  game.currentPlayer = (game.currentPlayer + 1) % game.players.length;  // next player
+  handHidden = true;                                                     // cover up
+  render();
+}
 
-// ===== TEMPORARY: switch players to test the render =====
-nextBtn.addEventListener("click", function () {
-  // % means "remainder": with 2 players this goes 0 → 1 → 0 → 1...
-  game.currentPlayer = (game.currentPlayer + 1) % game.players.length;
-  render();   // state changed → redraw
-});
+function revealHand() {
+  handHidden = false;
+  render();
+}
+
+endTurnBtn.addEventListener("click", endTurn);
+cover.addEventListener("click", revealHand);
+
+render();   // draw the first screen

@@ -136,3 +136,32 @@ body {
   flex-shrink: 0;                   /* don't squash cards to fit */
   scroll-snap-align: start;
 }
+
+/* Full-screen cover between turns */
+.cover {
+  position: fixed;
+  inset: 0;                 /* stretch to all four edges */
+  z-index: 10;              /* sit ON TOP of the hand bar */
+  background: #d6336c;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.cover h2 {
+  font-size: 40px;
+  margin: 8px 0;
+}
+
+.cover-small {
+  opacity: 0.85;
+}
+
+/* Adding the class "hidden" makes something disappear */
+.hidden {
+  display: none;
+}

@@ -11,13 +11,18 @@
   <h1>Yeji Deal</h1>
   <p id="deck-info"></p>
 
-  <!-- Temporary test button. Day 10 replaces it. -->
-  <button id="next-btn" class="button">Next player (test)</button>
+  <button id="end-turn-btn" class="button">End turn</button>
 
-  <!-- The hand bar, stuck to the bottom of the screen -->
   <div id="hand-area">
     <p id="hand-label"></p>
     <div id="hand"></div>
+  </div>
+
+  <!-- The pass-the-phone cover: sits on top of everything -->
+  <div id="cover" class="cover">
+    <p class="cover-small">Pass the phone to</p>
+    <h2 id="cover-name"></h2>
+    <p class="cover-small">Tap anywhere to reveal your hand 💛</p>
   </div>
 
   <script src="cards.js"></script>
